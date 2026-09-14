@@ -1,5 +1,6 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { RetroSpace } from './RetroSpace';
+import { CyberPet } from './CyberPet';
 import { useState, useEffect } from 'react';
 
 const LiveClock = () => {
@@ -66,29 +67,14 @@ const Layout = () => {
             </nav>
           </div>
 
-          {/* SYS Monitor Window */}
-          <div className="retro-window bg-black text-green-400 text-left p-3 sm:p-4 overflow-hidden">
-            <div className="retro-window-header bg-blue-800 text-white">
-              <span>SYS.MONITOR</span>
-              <span>_</span>
-            </div>
-            
-            <div className="font-mono text-[0.65rem] sm:text-[0.7rem] leading-tight mb-3 mt-2 opacity-80 h-20 sm:h-28 overflow-hidden flex flex-col justify-end">
-              <div className="animate-pulse">
-                &gt; LOADING ATTENTION HEADS...<br/>
-                &gt; L0H4: ACTIVATION [0.992]<br/>
-                &gt; TRACING INDUCTION CIRCUIT...<br/>
-                &gt; PAPER_TO_ANYTHING: ONLINE<br/>
-                &gt; AWAITING INPUT... █
-              </div>
-            </div>
+          {/* CyberPet Tamagotchi */}
+          <CyberPet />
 
-            {/* Live Clock */}
-            <div className="border-t-2 border-green-800 pt-2 text-center mt-2">
-              <p className="font-mono text-xs font-bold mb-1 tracking-widest text-green-600">SYS_TIME</p>
-              <div className="inline-block border border-green-500 bg-black text-green-400 font-mono font-bold text-base sm:text-lg px-2 shadow-[2px_2px_0_0_#22c55e]">
-                <LiveClock />
-              </div>
+          {/* Live System Clock */}
+          <div className="retro-window p-2 bg-black text-center border-4 border-black">
+            <p className="font-mono text-[0.65rem] font-bold tracking-widest text-green-500 mb-0.5">LOCAL_TIME</p>
+            <div className="inline-block text-green-400 font-mono font-bold text-sm sm:text-base tracking-wider">
+              <LiveClock />
             </div>
           </div>
         </aside>
