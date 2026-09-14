@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 const About = () => {
   return (
     <div className="font-sans border-4 border-black p-3 sm:p-6 md:p-8 bg-orange-100 shadow-[4px_4px_0_0_#000] sm:shadow-[8px_8px_0_0_#000]">
@@ -28,8 +30,8 @@ const About = () => {
       </div>
 
       <div className="mt-8 bg-black text-white p-4 border-4 border-red-600">
-        <p className="text-xl font-bold">
-          Feel free to email me if you guys want to have a meet during the weekend or during the week time. I'm not really free during the week time but I can make some time in the evening. Just <a href="mailto:dhruvapgowda.work@gmail.com" className="text-yellow-400 hover:text-red-400 underline">email me</a> and I will send you an invite or something.
+        <p className="text-base sm:text-lg md:text-xl font-bold">
+          Feel free to reach out if you want to have a meet during the weekend or during the week time. I can make some time in the evening. Just <Link to="/contact" className="text-yellow-400 hover:text-red-400 underline">send me a message</Link> or book a slot and I will send you an invite.
         </p>
       </div>
     </div>
