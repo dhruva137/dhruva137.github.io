@@ -4,10 +4,10 @@ import { getLinkText } from '../utils/linkUtils';
 
 const ResearchIndex = () => {
   return (
-    <div className="font-sans border-4 border-black p-4 bg-cyan-100 shadow-[8px_8px_0_0_#000]">
-      <header className="mb-8 border-b-4 border-black pb-4">
-        <h1 className="text-4xl font-extrabold text-blue-800 uppercase">RESEARCH INDEX</h1>
-        <p className="text-lg font-bold bg-yellow-300 inline-block px-2 border-2 border-black mt-2">
+    <div className="font-sans border-4 border-black p-3 sm:p-4 bg-cyan-100 shadow-[4px_4px_0_0_#000] sm:shadow-[8px_8px_0_0_#000]">
+      <header className="mb-6 sm:mb-8 border-b-4 border-black pb-3 sm:pb-4">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-blue-800 uppercase">RESEARCH INDEX</h1>
+        <p className="text-base sm:text-lg font-bold bg-yellow-300 inline-block px-2 border-2 border-black mt-2">
           PAPERS & PREPRINTS
         </p>
       </header>

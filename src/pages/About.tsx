@@ -1,11 +1,11 @@
 const About = () => {
   return (
-    <div className="font-sans border-4 border-black p-4 md:p-8 bg-orange-100 shadow-[8px_8px_0_0_#000]">
-      <h1 className="text-4xl font-extrabold text-blue-800 uppercase mb-8 border-b-4 border-black inline-block pb-2">
+    <div className="font-sans border-4 border-black p-3 sm:p-6 md:p-8 bg-orange-100 shadow-[4px_4px_0_0_#000] sm:shadow-[8px_8px_0_0_#000]">
+      <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-blue-800 uppercase mb-4 sm:mb-8 border-b-4 border-black inline-block pb-1 sm:pb-2">
         ABOUT ME
       </h1>
       
-      <div className="space-y-6 text-xl font-bold leading-relaxed bg-white p-6 border-4 border-black">
+      <div className="space-y-4 sm:space-y-6 text-base sm:text-lg md:text-xl font-bold leading-relaxed bg-white p-4 sm:p-6 border-4 border-black">
         <p>
           I'm Dhruva. I'm 20, from Bengaluru, India, currently pursuing my undergrad in Computer Science.
         </p>

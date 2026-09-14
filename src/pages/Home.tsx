@@ -6,13 +6,13 @@ const Home = () => {
   const featuredProjects = projects.filter(p => p.id !== 'papertoanything').slice(0, 4);
 
   return (
-    <div className="space-y-8 font-sans">
-      <h1 className="text-4xl text-blue-800 mb-4 font-bold border-b-4 border-black inline-block">
+    <div className="space-y-6 sm:space-y-8 font-sans">
+      <h1 className="text-2xl sm:text-3xl md:text-4xl text-blue-800 mb-2 sm:mb-4 font-bold border-b-4 border-black inline-block leading-tight">
         WELCOME TO MY HOMEPAGE!
       </h1>
       
       <div className="flex flex-col sm:flex-row gap-4 items-center sm:items-stretch">
-        <div className="flex-1 bg-yellow-200 border-4 border-black p-4 font-bold text-lg shadow-[4px_4px_0_0_#000]">
+        <div className="flex-1 bg-yellow-200 border-4 border-black p-3 sm:p-4 font-bold text-base sm:text-lg shadow-[4px_4px_0_0_#000]">
           Hey, I'm Dhruva. I'm a sophomore studying computer science in Bengaluru, and I'm diving deep into the mechanics of intelligence. Right now, my focus is on mechanistic interpretability and attention steering (via ARENA at TARA Bengaluru), and building out PaperToAnything.
         </div>
       </div>
