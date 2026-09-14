@@ -1,36 +1,53 @@
 import { useState } from 'react';
 
-const Contact = () => {
+export const Contact = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
-  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'fallback'>('idle');
+
+  // Obfuscated email decoded only at runtime in memory (immune to static web scrapers)
+  const getRecipient = () => atob('ZGhydXZhcGdvd2RhLndvcmtAZ21haWwuY29t');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('sending');
 
     try {
-      // Free anonymous relay via Web3Forms public endpoint (forwarding without exposing your email)
-      const res = await fetch('https://api.web3forms.com/submit', {
+      const recipient = getRecipient();
+      const res = await fetch(`https://formsubmit.co/ajax/${recipient}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
         body: JSON.stringify({
-          access_key: 'b947c617-640c-4ec4-9b16-bbad88f7c9e1', // Public relay token
           name: formData.name,
           email: formData.email,
           message: formData.message,
-          subject: `Portfolio Transmission from ${formData.name}`,
+          _subject: `[Portfolio Transmission] Message from ${formData.name}`,
+          _captcha: 'false',
         }),
       });
 
-      if (res.ok) {
+      const data = await res.json();
+      if (res.ok && data.success === 'true') {
         setStatus('success');
         setFormData({ name: '', email: '', message: '' });
       } else {
-        setStatus('error');
+        // If pending activation or blocked, provide graceful instant mailto relay
+        setStatus('fallback');
       }
     } catch {
-      setStatus('error');
+      setStatus('fallback');
     }
+  };
+
+  const handleOpenMailClient = () => {
+    const recipient = getRecipient();
+    const subject = encodeURIComponent(`Message from ${formData.name || 'Portfolio Visitor'}`);
+    const body = encodeURIComponent(
+      `Hi Dhruva,\n\n${formData.message}\n\nFrom: ${formData.name} (${formData.email})`
+    );
+    window.location.href = `mailto:${recipient}?subject=${subject}&body=${body}`;
   };
 
   return (
@@ -41,7 +58,7 @@ const Contact = () => {
       
       <div className="bg-white p-4 sm:p-6 border-4 border-black font-bold text-base sm:text-lg md:text-xl mb-6 sm:mb-8">
         <p>
-          Have a research collaboration idea, questions about PaperToAnything / mechanistic interpretability, or want to meet in Bengaluru? Send a message through the form below or book a slot on Calendly.
+          Have a research collaboration idea, questions about PaperToAnything / mechanistic interpretability, or want to meet in Bengaluru? Send a message below or book a 30-min call.
         </p>
       </div>
 
@@ -52,10 +69,10 @@ const Contact = () => {
           <span>[SECURE_CHANNEL]</span>
         </div>
 
-        {status === 'success' ? (
+        {status === 'success' && (
           <div className="bg-green-100 border-4 border-green-600 p-4 font-mono font-bold text-green-900 text-sm sm:text-base">
             <p className="text-lg">✓ TRANSMISSION SUCCESSFUL!</p>
-            <p className="mt-1">Your message was routed securely to my inbox. I'll get back to you soon.</p>
+            <p className="mt-1">Your message was sent directly to my inbox. I'll get back to you soon.</p>
             <button
               onClick={() => setStatus('idle')}
               className="mt-3 bg-black text-white px-3 py-1 font-bold hover:bg-yellow-300 hover:text-black border-2 border-black"
@@ -63,7 +80,48 @@ const Contact = () => {
               SEND ANOTHER
             </button>
           </div>
-        ) : (
+        )}
+
+        {status === 'fallback' && (
+          <div className="bg-yellow-200 border-4 border-black p-4 font-mono font-bold text-black text-xs sm:text-sm space-y-3">
+            <p className="text-base text-blue-800">
+              ⚡ 1-CLICK DISPATCH READY:
+            </p>
+            <p>
+              Your note has been pre-formatted. Click below to launch your email client with everything filled in, or copy the address:
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={handleOpenMailClient}
+                className="bg-blue-600 hover:bg-black text-white px-4 py-2 border-2 border-black font-bold shadow-[2px_2px_0_0_#000] hover-shake"
+              >
+                OPEN IN EMAIL APP (PRE-FILLED) &gt;&gt;
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText(getRecipient());
+                  alert('Email copied to clipboard!');
+                }}
+                className="bg-gray-100 hover:bg-yellow-300 text-black px-4 py-2 border-2 border-black font-bold shadow-[2px_2px_0_0_#000]"
+              >
+                COPY EMAIL TO CLIPBOARD
+              </button>
+            </div>
+            <div>
+              <button
+                type="button"
+                onClick={() => setStatus('idle')}
+                className="text-xs text-gray-600 underline hover:text-black"
+              >
+                &lt; Back to form
+              </button>
+            </div>
+          </div>
+        )}
+
+        {status !== 'success' && status !== 'fallback' && (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block font-mono font-bold text-xs sm:text-sm uppercase mb-1">
@@ -81,7 +139,7 @@ const Contact = () => {
 
             <div>
               <label className="block font-mono font-bold text-xs sm:text-sm uppercase mb-1">
-                Your Return Email (for replies):
+                Your Email (for replies):
               </label>
               <input
                 type="email"
@@ -102,29 +160,33 @@ const Contact = () => {
                 rows={4}
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                placeholder="Write your note or idea here..."
+                placeholder="Write your note or collaboration idea here..."
                 className="w-full border-4 border-black p-2 font-mono text-sm bg-gray-50 focus:bg-yellow-50 focus:outline-none"
               />
             </div>
 
-            {status === 'error' && (
-              <p className="font-mono text-xs font-bold text-red-600">
-                [!] Transmission failed. Please try again or book directly via Calendly below.
-              </p>
-            )}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+              <button
+                type="submit"
+                disabled={status === 'sending'}
+                className="px-6 py-3 bg-yellow-300 hover:bg-black hover:text-white font-mono font-bold text-base border-4 border-black shadow-[4px_4px_0_0_#000] hover-shake click-glitch transition-colors cursor-pointer"
+              >
+                {status === 'sending' ? 'TRANSMITTING...' : 'TRANSMIT MESSAGE >>'}
+              </button>
 
-            <button
-              type="submit"
-              disabled={status === 'sending'}
-              className="w-full sm:w-auto px-6 py-3 bg-yellow-300 hover:bg-black hover:text-white font-mono font-bold text-base border-4 border-black shadow-[4px_4px_0_0_#000] hover-shake click-glitch transition-colors"
-            >
-              {status === 'sending' ? 'TRANSMITTING...' : 'TRANSMIT MESSAGE >>'}
-            </button>
+              <button
+                type="button"
+                onClick={handleOpenMailClient}
+                className="text-xs font-mono font-bold text-blue-800 hover:text-red-600 underline py-2 text-center"
+              >
+                Or open in mail client directly
+              </button>
+            </div>
           </form>
         )}
       </div>
 
-      {/* Alternative Channels (Calendly, GitHub, LinkedIn) */}
+      {/* Direct Channels */}
       <h2 className="text-xl sm:text-2xl font-bold uppercase mb-4 border-b-2 border-black inline-block">
         DIRECT CHANNELS
       </h2>
